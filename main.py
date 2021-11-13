@@ -1,10 +1,13 @@
 from selenium.webdriver import Chrome
 from selenium.webdriver.common.by import By
 
+# Setting up the WebDriver for Chrome, and open Health Declaration From website
 CHROMEDRIVER_LOC = '/Users/Justin/Downloads/chromedriver_win32/chromedriver'
 driver = Chrome(CHROMEDRIVER_LOC)
 driver.get('https://hdf.chp.gov.hk/dhehd/hdf-hkia.jsp?lang=en-us')
 
+# Passenger data, which will be retrieved as JSON objects/arrays in the real product
+# Currently coded in for sake of functionality demonstration
 passenger_data = [
     {
         "surname_0":"Doe", "givenname_0": "Johnathan",
@@ -28,15 +31,16 @@ passenger_data = [
     ]
 ]
 
+# XPaths of main navigation buttons in the form
 NEXT_BUTTON = '//*[@id="btnNext"]'
-
 DECLARATION_CHECK = '//*[@id="declareTC"]'
 COMPLETE_BUTTON = '//*[@id="goToFinal_0"]'
 
+# To move past the Personal Information Collection Statement
 driver.find_element(By.XPATH, NEXT_BUTTON).click()
 
 def answer_text(driver):
-    """Answer all text-input questions"""
+    """Answer all text-input questions."""
     for key, datum in passenger_data[0].items():
         question = driver.find_element(By.ID, key)
         question.send_keys(datum)
@@ -44,7 +48,7 @@ def answer_text(driver):
     return driver
 
 def answer_radio(driver):
-    """Answer all radio button questions"""
+    """Answer all radio button questions."""
     for key, val in passenger_data[1].items():
         field = driver.find_element(By.ID, key)
         field.find_element(By.CSS_SELECTOR, f"[for={key+val}]").click()
@@ -52,7 +56,7 @@ def answer_radio(driver):
     return driver
 
 # def answer_dropdowns(driver):
-#     "Answer all dropdown questions that require searching"
+#     """Answer the long dropdown questions."""
 #     for sublist in passenger_data[2]:
 #         driver.find_element(By.ID, sublist[0]).click()
 #         select_menu = driver.find_element(By.ID, sublist[1])
@@ -62,4 +66,10 @@ def answer_radio(driver):
 
 # driver = answer_text(driver)
 # driver = answer_radio(driver)
-driver = answer_dropdowns(driver)
+# driver = answer_dropdowns(driver)
+
+# Declare that given information is correct/complete
+driver.find_element(By.XPATH, NEXT_BUTTON).click()
+
+# Submit form. Commented out to avoid accidental submission with fake data.
+# driver.find_element(By.XPATH, NEXT_BUTTON).click()
