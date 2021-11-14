@@ -25,15 +25,14 @@ passenger_data = [
         "isVaccinatedBeforeHK_0": "a", "qAddressType_0": "b"
     },
     [
-        ["countryOriginal_0_1-button", "countryOriginal_0_1-menu", "211"],
-        ["countryCode_0-button", "countryCode_0-menu", "1"],
-        ["qDesignatedHotel_0-button", "qDesignatedHotel_0-menu", "13"]
+        ["countryOriginal_0_1-button", "countryOriginal_0_1-dialog", "United Kingdom"],
+        ["qDesignatedHotel_0-button", "qDesignatedHotel_0-dialog", "Empire Hotel Causeway Bay"]
     ]
 ]
 
 # XPaths of main navigation buttons in the form
 NEXT_BUTTON = '//*[@id="btnNext"]'
-DECLARATION_CHECK = '//*[@id="declareTC"]'
+DECLARATION_CHECK = '//*[@id="Companion_0"]/div[50]/label'
 COMPLETE_BUTTON = '//*[@id="goToFinal_0"]'
 
 # To move past the Personal Information Collection Statement
@@ -55,21 +54,27 @@ def answer_radio(driver):
 
     return driver
 
-# def answer_dropdowns(driver):
-#     """Answer the long dropdown questions."""
-#     for sublist in passenger_data[2]:
-#         driver.find_element(By.ID, sublist[0]).click()
-#         select_menu = driver.find_element(By.ID, sublist[1])
-#         select_menu.find_element(By.CSS_SELECTOR, f"[dataset.optionIndex={sublist[2]}]").click()
+def answer_dropdowns(driver):
+    """Answer the long dropdown questions."""
+    # for sublist in passenger_data[2]:
 
-#     return driver
+    sublist = passenger_data[2][1]
+    driver.find_element(By.ID, sublist[0]).click()
+    dialog = driver.find_element(By.ID, sublist[1])
 
-# driver = answer_text(driver)
-# driver = answer_radio(driver)
-# driver = answer_dropdowns(driver)
+    search_box = dialog.find_element(By.CSS_SELECTOR, 'form input')
+    search_box.send_keys(sublist[2])
+    data_option = dialog.find_element(By.CSS_SELECTOR, 'li.ui-first-child a')
+    data_option.click()
+
+    return driver
+
+driver = answer_text(driver)
+driver = answer_radio(driver)
+driver = answer_dropdowns(driver)
 
 # Declare that given information is correct/complete
-driver.find_element(By.XPATH, NEXT_BUTTON).click()
+driver.find_element(By.XPATH, DECLARATION_CHECK).click()
 
 # Submit form. Commented out to avoid accidental submission with fake data.
-# driver.find_element(By.XPATH, NEXT_BUTTON).click()
+# driver.find_element(By.XPATH, COMPLETE_BUTTON).click()
